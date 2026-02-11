@@ -35,9 +35,9 @@ class Converter():
         self.temp_entry.grid(row=2, padx=10,pady=10)
 
         error = "please enter a number "
-        self.temp_error = Label(self.temp_frame, text=error,
-                                fg="#9C0000")
-        self.temp_error.grid(row=3)
+        self.answer_error = Label(self.temp_frame, text=error,
+                                  fg="#004C99", )
+        self.answer_error.grid(row=3)
 
         # conversion help and history / export buttons
         self.button_frame = Frame(self.temp_frame)
@@ -68,22 +68,44 @@ class Converter():
 
 
     def check_temp(self,min_temp):
+        """
+        checks temp is valid and
+        either invokes calculation function or shows an custom error
+        """
         print("Min temp:", min_temp)
 
         # retiriece temperqture to be converted
         to_convert = self.temp_entry.get()
         print("to convert", to_convert)
 
+        # reset label and entry box (if we had an error)
+        self.answer_error.config(fg="#004C99")
+        self.temp_entry.config(bg="#FFFFFF")
+
+        # checks that amo8nt to e converted is a number above absolute zero
         try:
             to_convert = float(to_convert)
             if to_convert >= min_temp:
-                # print("you are ok")
-                self.temp_error.config(text="You Are ok")
+               error = ""
+               self.convert(min_temp)
             else:
-                self.temp_error.config(text="to low ")
+                error = "Too Low "
 
         except ValueError:
-            self.temp_error.config(text="Please enter a number")
+            error = "please enter a number "
+
+        # display the error if necessary
+        if error != "":
+            self.answer_error.config(text=error, fg="#9C0000")
+            self.temp_entry.config(bg="#F4CCCC")
+            self.temp_entry.delete(0,END)
+
+    def convert(self,min_temp):
+
+        if min_temp == c.ABS_ZERO_CELSIUS:
+            self.answer_error.config(text="Converting to F")
+        else:
+            self.answer_error.config(text="Converting to C")
 
 
 # main routine
